@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>dobest_user_promission</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <!-- built files will be auto injected -->
+    <script type="text/javascript">
+    	var initConfig = {
+				indexRoute: 'administration', // type: String ep: route's name 如果没有，或误填则去默认返回第一个项 并过滤含有子节点的根节点
+				skipLogin: true, // if value = true is require system skip login authention
+				include: ['administration','test','test4','登陆统计'],
+				user: '小龙人',
+				logout: function () {
+					console.log('注销')
+				}
+			}
+    </script>
+  </body>
+</html>
+  
