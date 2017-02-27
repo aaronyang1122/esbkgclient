@@ -8,6 +8,7 @@ const lazyLoading = (name, index=false) => {
 		  })
 		}
 		catch (e) {
+			console.log(e)
 			require.ensure([], () => {
 		    resolve(require('../components/views/Building.vue'))
 		  })
@@ -16,6 +17,7 @@ const lazyLoading = (name, index=false) => {
 }
 
 const pointerMenuObj = (menu, value) => {
+	console.log()
   for (var i = 0; i < menu.length; i++) {
     if (menu[i].name === value) {
       return menu[i]

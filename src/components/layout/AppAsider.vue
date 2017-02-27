@@ -55,9 +55,6 @@
 	  watch: {
 			'$route' () {
 				this.$store.dispatch('setDefaultItem', this.$route.name)
-				if (pointerMenuObj(this.menu, this.$route.name).hasOwnProperty('children')) {
-				  this.$router.push({name: pointerMenuObj(this.menu, this.$route.name).children[0]['name']})
-				}
 			}
 		}
   }

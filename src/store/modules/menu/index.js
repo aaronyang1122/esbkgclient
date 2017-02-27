@@ -1,5 +1,5 @@
 import * as types from '../../mutation-types'
-//import administration from './administration'
+import administration from './administration'
 
 // show: meta.label -> name
 // name: component name
@@ -10,7 +10,7 @@ const state = {
   items: []
 }
 
-//state.items.push(administration)
+// state.items.push(administration)
 
 const mutations = {
 //[types.EXPAND_MENU] (state, menuItem) {

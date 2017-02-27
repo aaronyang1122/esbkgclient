@@ -24,8 +24,8 @@ module.exports = {
     proxyTable: {
       // proxy all requests starting with /api to jsonplaceholder
       '/api': {
-        target: 'http://www.service.com',
-        changeOrigin: true
+        target: 'http://127.0.0.1:3033',
+        changeOrigin: false
       }
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"
