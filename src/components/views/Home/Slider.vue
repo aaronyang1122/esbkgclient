@@ -6,7 +6,7 @@
             <el-row :gutter="20">
                 <el-col :span="24">
                     <el-button type="primary" icon="plus" @click="dialogFormVisible = true">添加</el-button>
-                    <el-button type="danger" icon="minus" @click="dialogFormVisible = true">删除</el-button>
+                    <el-button type="danger" icon="minus" @click="handleDelete" :disabled="multipleSelection.length===0">删除</el-button>
                 </el-col>
             </el-row>
             <!-- / search bar -->
@@ -97,7 +97,7 @@
                         <el-option label="右" value="right"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="Logo" prop="logo" :rules="{required: true, trigger: 'blur'}">
+                <el-form-item label="Logo" prop="logo" :rules="{required: true, trigger: 'change'}">
                     <el-input v-model="form.logo" auto-complete="off"></el-input>
                     <el-upload action="/api/upload/slider" :on-success="handleLogo" :on-error="handleuploaderror" accept="image/*" :before-upload="beforeUpload" list-type="picture" :show-file-list="false">
                         <div v-if="form.logo" class="picProview">
@@ -106,7 +106,7 @@
                         <el-button size="small" type="primary">点击上传</el-button>
                     </el-upload>
                 </el-form-item>
-                <el-form-item label="商品图" prop="prdpic" :rules="{required: true, trigger: 'blur'}">
+                <el-form-item label="商品图" prop="prdpic" :rules="{required: true, trigger: 'change'}">
                     <el-input v-model.number="form.prdpic" auto-complete="off"></el-input>
                     <el-upload action="/api/upload/slider" :on-success="handleProductPic" :on-error="handleuploaderror" accept="image/*" :before-upload="beforeUpload" list-type="picture" :show-file-list="false">
                         <div v-if="form.prdpic" class="picProview">
@@ -158,7 +158,7 @@
                          ch: "",
                          en: ""
                       },
-                      index: "",
+                      index: 0,
                       textposition: "left",
                       logo: "",
                       prdpic: ""
@@ -229,8 +229,8 @@
       handleBack () {
       	handleBack.call(this)
       },
-      handleDelete (index, row) {
-      	handleDelete.call(this, index, row, {
+      handleDelete () {
+      	handleDelete.call(this, {
       		tips: '此操作将删除该用户, 是否继续?',
       		api: '/api/slider/delete',
       		listApi: '/api/slider/list',

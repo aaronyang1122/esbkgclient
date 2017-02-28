@@ -177,7 +177,7 @@ const handleSelect = function (item) {
 	this.$router.push({name: this.$route.name, query: { search: item.name }})
 }
 
-const handleDelete = function (index, row, options) {
+const handleDelete = function (options) {
 	options.remove = options.remove || false
 	// first popup a confirm
 	this.$confirm(options.tips, '提示', {
@@ -188,12 +188,15 @@ const handleDelete = function (index, row, options) {
   	// Yes
   	// start request
   	this.$http.delete(options.api,
-        options.data,
 		{
 			before (request) {
 				// before request show loading
+				console.log(request)
 				this.loading = true
-  		}
+  			},
+            emulateHTTP: false,
+            emulateJSON: true,
+			body: options.data
 		}).then((res) => {
 			// close loading
 	  	this.loading = false
@@ -218,11 +221,11 @@ const handleDelete = function (index, row, options) {
 		        })
 		  		})
 	  	} else {
-	  		Array.prototype.forEach.call(this.mainData, (e, i, arr) => {
+	  		/*Array.prototype.forEach.call(this.mainData, (e, i, arr) => {
 		  		if (e[options.id] === row[options.id]) {
 		  			e.status = 1
 		  		}
-		  	})
+		  	})*/
 	  		
 	  		// show success message
 		  	this.$message({
@@ -261,7 +264,8 @@ const handleSubmit = function (options) {
       	before (request) {
 				// before request show loading
 				this.formloading = true
-  		}
+  		},
+          emulateJSON: true
 		}).then((res) => {
 			// close loading
 	  	this.formloading = false
