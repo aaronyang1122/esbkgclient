@@ -39,7 +39,7 @@ const currentArr = function (index) {
 	index = parseInt(index)
 	let _start = (index - 1) * this.pageSize
 	let _end = _start + this.pageSize
-	return Array.prototype.slice.call(this.sortMainData, _start, _end)
+	return Array.prototype.slice.call(this.mainData, _start, _end)
 }
 
 const handleBack = function () {
@@ -187,13 +187,12 @@ const handleDelete = function (index, row, options) {
   }).then(() => {
   	// Yes
   	// start request
-  	this.$http.get(options.api, {
+  	this.$http.delete(options.api,
+        options.data,
+		{
 			before (request) {
 				// before request show loading
 				this.loading = true
-  		},
-  		params: {
-  			id: row[options.id]
   		}
 		}).then((res) => {
 			// close loading

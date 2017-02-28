@@ -13,7 +13,8 @@
 
             <!-- table -->
             <el-row>
-                <el-table :data="currentData" v-loading.body="loading" style="width: 100%" :row-class-name="filterRowDisable" border>
+                <el-table :data="currentData" v-loading.body="loading" style="width: 100%" :row-class-name="filterRowDisable" border @selection-change="handleSelectionChange">
+                    <el-table-column type="selection" width="55"></el-table-column>
                     <el-table-column prop="index" label="index" width="90"></el-table-column>
                     <el-table-column prop="title.ch" label="标题"></el-table-column>
                     <el-table-column prop="createtime" label="创建时间"></el-table-column>
@@ -28,11 +29,8 @@
             <!-- / table -->
 
             <!-- pagination -->
-            <el-row v-if="!isSearched">
+            <el-row>
                 <el-pagination layout="sizes, prev, pager, next" :total="totalItems" :page-sizes="[10, 20, 30, 40]" :page-size="pageSize" :current-page="currentPage"  @current-change="handleCurrentChange" @size-change="handleSizeChange"></el-pagination>
-            </el-row>
-            <el-row v-if="isSearched">
-                <el-button @click="handleBack">返回</el-button>
             </el-row>
             <!-- / pagination -->
         </div>
@@ -74,49 +72,48 @@
         <!-- / detail component -->
 
         <!-- add component -->
-        <el-dialog title="添加用户" v-model="dialogFormVisible" @close="handleReset">
-            <el-form :model="form" :rules="formrules" ref="form" label-width="80px">
-                <el-form-item label="用户名" prop="name">
-                    <el-input v-model="form.name" auto-complete="off" placeholder="例：zhangsan"></el-input>
+        <el-dialog title="添加" v-model="dialogFormVisible" @close="handleReset">
+            <el-form :model="form" ref="form" label-width="80px">
+                <el-form-item label="标题" prop="title.ch" :rules="{required: true, trigger: 'blur'}">
+                    <el-input v-model="form.title.ch" auto-complete="off" placeholder="例：标题（中文）"></el-input>
                 </el-form-item>
-                <el-form-item label="昵称" prop="nickname">
-                    <el-input v-model="form.nickname" auto-complete="off" placeholder="例：张三"></el-input>
+                <el-form-item label="Title" prop="title.en" :rules="{required: true, trigger: 'blur'}">
+                    <el-input v-model="form.title.en" auto-complete="off" placeholder="e.g. Title（English）"></el-input>
                 </el-form-item>
-                <el-form-item label="盛大ID" prop="sndaid">
-                    <el-input v-model.number="form.sndaid" auto-complete="off" placeholder="例：123456"></el-input>
+                <el-form-item label="内容" prop="content.ch" :rules="{required: true, trigger: 'blur'}">
+                    <el-input v-model="form.content.ch" auto-complete="off" placeholder="例：内容（中文）"></el-input>
                 </el-form-item>
-                <el-form-item label="密码" prop="password">
-                    <el-input v-model="form.password" auto-complete="off"></el-input>
+                <el-form-item label="Content" prop="content.en" :rules="{required: true, trigger: 'blur'}">
+                    <el-input v-model.number="form.content.en" auto-complete="off" placeholder="e.g. Content(English)"></el-input>
                 </el-form-item>
-                <el-form-item label="部门" prop="department">
-                    <el-input v-model="form.department" auto-complete="off" placeholder="例：数据部"></el-input>
+                <el-form-item label="优先级">
+                    <el-input v-model="form.index" auto-complete="off" placeholder="必须是数字"></el-input>
                 </el-form-item>
-                <el-form-item label="职位名称" prop="jobtitle">
-                    <el-input v-model="form.jobtitle" auto-complete="off" placeholder="例：开发工程师"></el-input>
-                </el-form-item>
-                <el-form-item label="电话" prop="phone">
-                    <el-input v-model.number="form.phone" auto-complete="off" placeholder="例：8888888"></el-input>
-                </el-form-item>
-                <el-form-item label="分机" prop="extension">
-                    <el-input v-model.number="form.extension" auto-complete="off" placeholder="例：000"></el-input>
-                </el-form-item>
-                <el-form-item label="邮箱" prop="email">
-                    <el-input v-model="form.email" auto-complete="off" placeholder="例：someone@somemail.com"></el-input>
-                </el-form-item>
-                <el-form-item label="QQ" prop="qq">
-                    <el-input v-model.number="form.qq" auto-complete="off" placeholder="例：12345"></el-input>
-                </el-form-item>
-                <el-form-item label="性别" prop="sex">
-                    <el-select v-model="form.sex" placeholder="请选择性别">
-                        <el-option label="男" :value="0"></el-option>
-                        <el-option label="女" :value="1"></el-option>
+                <el-form-item label="文字位置">
+                    <el-select v-model="form.textposition" >
+                        <el-option label="上" value="top"></el-option>
+                        <el-option label="下" value="bottom"></el-option>
+                        <el-option label="左" value="left"></el-option>
+                        <el-option label="右" value="right"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="用户类型" prop="usertype">
-                    <el-select v-model="form.usertype" placeholder="请选择用户类型">
-                        <el-option label="管理员" :value="0"></el-option>
-                        <el-option label="普通用户" :value="1"></el-option>
-                    </el-select>
+                <el-form-item label="Logo" prop="logo" :rules="{required: true, trigger: 'blur'}">
+                    <el-input v-model="form.logo" auto-complete="off"></el-input>
+                    <el-upload action="/api/upload/slider" :on-success="handleLogo" :on-error="handleuploaderror" accept="image/*" :before-upload="beforeUpload" list-type="picture" :show-file-list="false">
+                        <div v-if="form.logo" class="picProview">
+                            <img :src="form.logo">
+                        </div>
+                        <el-button size="small" type="primary">点击上传</el-button>
+                    </el-upload>
+                </el-form-item>
+                <el-form-item label="商品图" prop="prdpic" :rules="{required: true, trigger: 'blur'}">
+                    <el-input v-model.number="form.prdpic" auto-complete="off"></el-input>
+                    <el-upload action="/api/upload/slider" :on-success="handleProductPic" :on-error="handleuploaderror" accept="image/*" :before-upload="beforeUpload" list-type="picture" :show-file-list="false">
+                        <div v-if="form.prdpic" class="picProview">
+                            <img :src="form.prdpic">
+                        </div>
+                        <el-button size="small" type="primary">点击上传</el-button>
+                    </el-upload>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -149,72 +146,64 @@
 				pageSize: 10,
 				dialogTableVisible: false,
 				dialogFormVisible: false,
+				mirroring_logo: "",
+				mirroring_prdpic: "",
+				multipleSelection: [],
 				form: {
-                      name: "",
-                      nickname: "",
-                      sndaid: "",
-                      password: "",
-                      department: "",
-                      jobtitle: "",
-                      phone: "",
-                      extension: "",
-                      email: "",
-                      qq: "",
-                      sex: "",
-                      usertype: ""
+                      title: {
+                         ch: "",
+                         en: ""
+                      },
+                      content: {
+                         ch: "",
+                         en: ""
+                      },
+                      index: "",
+                      textposition: "left",
+                      logo: "",
+                      prdpic: ""
+
                 },
         excludeEdit: ['userid', 'updatetime', 'createtime', 'operator', 'remember_token', 'departmentname', 'rolesname', 'gamesname'],
-        formrules: {
-          name: [
-            { required: true,
-            	message: '请输入用户名',
-            	trigger: 'blur'
-            }
-          ],
-          nickname: [
-            {
-            	required: true,
-            	message: '请输入昵称',
-            	trigger: 'blur'
-            }
-          ],
-          sndaid: [
-            {
-            	required: true,
-            	type: 'number',
-            	message: '请输入盛大ID',
-            	trigger: 'blur'
-            },
-            {
-            	type: 'number',
-            	message: '纯数字不包含其他字符',
-            	trigger: 'blur,change'
-            }
-          ],
-          password: [{ required: false }],
-          department: [{ required: false }],
-          jobtitle: [{ required: false }],
-          phone: [{ required: false }],
-          extension: [{ required: false }],
-          qq: [{ required: false }],
-          usertype: [{ required: false }],
-          email: [
-            {
-            	required: true,
-            	message: '请输入邮箱',
-            	trigger: 'blur'
-            },
-            {
-            	type: 'email',
-            	message: '请输入正确的邮箱地址',
-            	trigger: 'blur,change'
-            }
-          ]
-        },
         formLabelWidth: '120px'
 			}
 		},
 		methods: {
+		    handleSelectionChange (val) {
+                this.multipleSelection = val;
+                console.log(this.multipleSelection)
+            },
+		    handleLogo (response, file, fileList) {
+                this.$message({
+                      message: response.filename + "上传已经成功",
+                      type: 'success'
+                    });
+		        response.path = ("/" + response.path.replace(/\\/ig, "/")).replace(/public/ig, "static");
+                this.mirroring_logo = this.form.logo = response.path;
+            },
+            handleProductPic (response, file, fileList) {
+                this.$message({
+                      message: response.filename + "上传已经成功",
+                      type: 'success'
+                    });
+		        response.path = ("/" + response.path.replace(/\\/ig, "/")).replace(/public/ig, "static");
+                this.mirroring_prdpic = this.form.prdpic = response.path;
+            },
+            beforeUpload (file) {
+                const PIC = file.type === 'image/jpeg' || file.type === 'image/png';
+                const isLt2M = file.size / 1024 / 1024 < 2;
+
+                if (!PIC) {
+                    this.$message.error('上传图片只能是 JPG 或 PNG 格式!');
+                }
+                if (!isLt2M) {
+                    this.$message.error('上传图片大小不能超过 2MB!');
+                }
+                return PIC && isLt2M;
+            },
+            handleuploaderror () {
+                this.$message.error('上传图片失败');
+            },
 			showEdit,
       handleDetail (index, row) {
       	handleDetail.call(this, index, row, {
@@ -243,20 +232,19 @@
       handleDelete (index, row) {
       	handleDelete.call(this, index, row, {
       		tips: '此操作将删除该用户, 是否继续?',
-      		api: '/api/deleteUser',
-      		listApi: '/api/showUserAuth',
-      		id: 'userid',
+      		api: '/api/slider/delete',
+      		listApi: '/api/slider/list',
+      		data: {
+      		    id: this.multipleSelection.length > 1 ? this.multipleSelection.map((e) => e._id) : this.multipleSelection[0]['_id']
+      		},
       		remove: true
       	})
       },
       handleSubmit () {
       	handleSubmit.call(this, {
-      		api: '/api/addUser',
-      		listApi: '/api/showUserAuth',
-      		data: {
-      			_token: this.token,
-      			userArray: this.form
-      		}
+      		api: '/api/slider/add',
+      		listApi: '/api/slider/list',
+      		data: this.form
       	})
       },
       handleEdit (index, row) {
@@ -273,15 +261,12 @@
       	})
       },
       handleReset () {
-      	// reset 表单
-        this.$refs.form.resetFields();
+            // reset 表单
+            this.$refs.form.resetFields();
+            this.form.logo = this.mirroring_logo
+            this.form.prdpic = this.mirroring_prdpic
       }
    	},
-   	computed: {
-	  	sortMainData () {
-	  		return sortByTime(this.mainData)
-	  	}
-  	},
    	watch: {
 			'mainData' (val, oldVal) {
 //				console.log('mainData:' + val)
@@ -300,11 +285,25 @@
    	}
 	}
 </script>
-<style scoped>
+<style scoped lang="less">
 	.el-pagination {
 		padding: 2px 0;
 	}
 	.el-form {
 		width: 440px;
 	}
+	.picProview {
+	    width: 100%;
+        border: 1px dashed #ccc;
+        margin-top: 10px;
+        padding: 10px;
+	    img {
+            width: 100%;
+        }
+	}
+</style>
+<style>
+     .el-upload--picture {
+        text-align: left;
+    }
 </style>
