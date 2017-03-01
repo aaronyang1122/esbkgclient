@@ -16,7 +16,7 @@
                 <el-table :data="currentData" v-loading.body="loading" style="width: 100%" border @selection-change="handleSelectionChange">
                     <el-table-column type="selection" width="55"></el-table-column>
                     <el-table-column prop="index" label="index" width="90"></el-table-column>
-                    <el-table-column prop="title.ch" label="标题"></el-table-column>
+                    <el-table-column prop="name.ch" label="产品名"></el-table-column>
                     <el-table-column prop="createtime" label="创建时间"></el-table-column>
                     <el-table-column prop="updatetime" label="更新时间"></el-table-column>
                     <el-table-column inline-template :context="_self" label="操作" width="90">
@@ -38,46 +38,17 @@
         <!-- add component -->
         <el-dialog :title="isedit?'修改':'添加'" v-model="dialogFormVisible" @close="handleReset">
             <el-form :model="form" ref="form" label-width="80px" v-loading="editloading">
-                <el-form-item label="标题" prop="title.ch" :rules="{required: true, trigger: 'blur'}">
-                    <el-input v-model="form.title.ch" auto-complete="off" placeholder="例：标题（中文）"></el-input>
+                <el-form-item label="标题" prop="name.ch" :rules="{required: true, trigger: 'blur'}">
+                    <el-input v-model="form.name.ch" auto-complete="off" placeholder="例：标题（中文）"></el-input>
                 </el-form-item>
-                <el-form-item label="Title" prop="title.en" :rules="{required: true, trigger: 'blur'}">
-                    <el-input v-model="form.title.en" auto-complete="off" placeholder="e.g. Title（English）"></el-input>
-                </el-form-item>
-                <el-form-item label="内容" prop="content.ch" :rules="{required: true, trigger: 'blur'}">
-                    <el-input v-model="form.content.ch" auto-complete="off" placeholder="例：内容（中文）"></el-input>
-                </el-form-item>
-                <el-form-item label="Content" prop="content.en" :rules="{required: true, trigger: 'blur'}">
-                    <el-input v-model.number="form.content.en" auto-complete="off" placeholder="e.g. Content(English)"></el-input>
+                <el-form-item label="Title" prop="name.en" :rules="{required: true, trigger: 'blur'}">
+                    <el-input v-model="form.name.en" auto-complete="off" placeholder="e.g. Title（English）"></el-input>
                 </el-form-item>
                 <el-form-item label="优先级">
                     <el-input v-model="form.index" auto-complete="off" placeholder="必须是数字"></el-input>
                 </el-form-item>
-                <el-form-item label="文字位置">
-                    <el-select v-model="form.textposition" >
-                        <el-option label="上" value="top"></el-option>
-                        <el-option label="下" value="bottom"></el-option>
-                        <el-option label="左" value="left"></el-option>
-                        <el-option label="右" value="right"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="Logo" prop="logo" :rules="{required: true, trigger: 'change'}">
-                    <el-input v-model="form.logo" auto-complete="off"></el-input>
-                    <el-upload action="/api/upload/slider" :on-success="handleLogo" :on-error="handleuploaderror" accept="image/*" :before-upload="beforeUpload" list-type="picture" :show-file-list="false">
-                        <div v-if="form.logo" class="picProview">
-                            <img :src="form.logo">
-                        </div>
-                        <el-button size="small" type="primary">点击上传</el-button>
-                    </el-upload>
-                </el-form-item>
-                <el-form-item label="商品图" prop="prdpic" :rules="{required: true, trigger: 'change'}">
-                    <el-input v-model.number="form.prdpic" auto-complete="off"></el-input>
-                    <el-upload action="/api/upload/slider" :on-success="handleProductPic" :on-error="handleuploaderror" accept="image/*" :before-upload="beforeUpload" list-type="picture" :show-file-list="false">
-                        <div v-if="form.prdpic" class="picProview">
-                            <img :src="form.prdpic">
-                        </div>
-                        <el-button size="small" type="primary">点击上传</el-button>
-                    </el-upload>
+                <el-form-item label="链接">
+                    <el-input v-model="form.link" auto-complete="off" placeholder="例：跳转至其他地方，如：商城等的外链"></el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -115,19 +86,27 @@
                 mirroring_prdpic: "",
                 multipleSelection: [],
                 form: {
-                    title: {
+                    name: {
                         ch: "",
                         en: ""
                     },
-                    content: {
-                        ch: "",
-                        en: ""
-                    },
+                    section: [
+                        {
+                            title: {
+                                ch: "",
+                                en: ""
+                            },
+                            content: {
+                                ch: "",
+                                en: ""
+                            },
+                            img: "",
+                            link: "",
+                            textposition: "left"
+                        }
+                    ],
                     index: 0,
-                    textposition: "left",
-                    logo: "",
-                    prdpic: ""
-
+                    link: ""
                 }
             }
         },
@@ -174,8 +153,8 @@
             handleDelete () {
                 handleDelete.call(this, {
                     tips: '此操作将从数据库中彻底删除, 是否继续?',
-                    api: '/api/slider/delete',
-                    listApi: '/api/slider/list',
+                    api: '/api/product/delete',
+                    listApi: '/api/product/list',
                     data: {
                         id: this.multipleSelection.length > 1 ? this.multipleSelection.map((e) => e._id) : this.multipleSelection[0]['_id']
                     },
@@ -184,8 +163,8 @@
             },
             handleSubmit () {
                 handleSubmit.call(this, {
-                    api: '/api/slider/add',
-                    listApi: '/api/slider/list',
+                    api: '/api/product/add',
+                    listApi: '/api/product/list',
                     data: this.form
                 })
             },
@@ -194,7 +173,7 @@
                 this.isedit = true;
                 this.currentId = row._id;
                 handleEdit.call(this, {
-                    api: '/api/slider/detail',
+                    api: '/api/product/detail',
                     data: {
                         id: row._id
                     }
@@ -202,8 +181,8 @@
             },
             handleUpdate () {
                 handleUpdate.call(this, {
-                    api: '/api/slider/update',
-                    listApi: '/api/slider/list',
+                    api: '/api/product/update',
+                    listApi: '/api/product/list',
                     data: this.form,
                     query: {
                         id: this.currentId
@@ -227,7 +206,7 @@
         },
         created () {
             initList.call(this, {
-                api: '/api/slider/list'
+                api: '/api/product/list'
             })
         }
     }
