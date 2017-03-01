@@ -141,7 +141,7 @@
 	</section>
 </template>
 
-<script>
+<script type="text/javascript">
 	import { mapGetters, mapActions } from 'vuex'
 	import { currentArr, handleBack, findDetailListIndex, showEdit, handleDetail, handleCurrentChange, handleSizeChange, querySearch, handleSelect, handleDelete, handleSubmit, handleEdit, initList, handleRoute } from '../../../common/common'
 	import { filterEmpty, filterRowDisable, sortByTime, filterDetail } from '../../../filters/'

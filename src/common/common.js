@@ -17,7 +17,6 @@ const lazyLoading = (name, index=false) => {
 }
 
 const pointerMenuObj = (menu, value) => {
-	console.log()
   for (var i = 0; i < menu.length; i++) {
     if (menu[i].name === value) {
       return menu[i]
@@ -191,7 +190,6 @@ const handleDelete = function (options) {
 		{
 			before (request) {
 				// before request show loading
-				console.log(request)
 				this.loading = true
   			},
             emulateHTTP: false,
@@ -307,57 +305,84 @@ const handleSubmit = function (options) {
   })
 }
 
-const handleEdit = function (index, row, options) {
-	// edit
-	if (row.newValue !== undefined) {
-		// submit some edit
-		var _data = {}
-		_data[row.name] = row.newValue
-//		'/api/updateUser'
-		this.$http.post(options.api,
-      options.data,
-      {
-      	before (request) {
-					this.editloading = true
-  		}
-		}).then((res) => {
-			row.newValue = ''
-			// success
-			this.editloading = false
-			// update mainData
-	  	Array.prototype.forEach.call(this.mainData, (e, i, arr) => {
-	  		if (e[options.id]=== row.id) {
-	  			e[row.name] = res.body.content[0][row.name]
-	  			e.updatetime = res.body.content[0].updatetime
-	  		}
-	  	})
-	  	// update detailData
-	  	this.detailData[findDetailListIndex.call(this, row.name)].content = res.body.content[0][row.name]
-	  	// update updatetime
-	  	this.detailData[findDetailListIndex.call(this, 'updatetime')].content = res.body.content[0].updatetime
-	  	// close edit
-	  	row.edit = false
-	  	// show success message
-	  	this.$message({
-        message: '修改成功!',
-        type: 'success'
-      })
-		}, (err) => {
-			row.newValue = ''
-			this.editloading = false
-			// error
-			this.$message({
-        message: errorMessage(err.body),
-        type: 'error'
-      })
-		})
-	} else {
-		// check empty
-		this.$message({
-      message: '您没有输入任何内容，请输入后再提交',
-      type: 'warning'
-    })
-	}
+const handleEdit = function (options) {
+    this.$http.get(
+        options.api,
+        {
+            before (request) {
+                this.editloading = true;
+            },
+            params: options.data
+        }
+    ).then(
+        (res) => {
+            // success
+            for (var key in this.form) {
+                this.form[key] = res.body[key]
+            }
+            this.editloading = false
+        },
+        (err) => {
+            // error
+            this.dialogFormVisible = false
+            this.editloading = false
+            // error
+            this.$message({
+                message: errorMessage(err.body),
+                type: 'error'
+            })
+        }
+    )
+}
+
+const handleUpdate = function (options) {
+    // submit some edit
+    var _data = {}
+    this.$http.post(
+        options.api,
+        options.data,
+        {
+            before (request) {
+                this.editloading = true
+            },
+            params: options.query,
+            emulateJSON: true
+        }
+    ).then(
+        (res) => {
+            this.$http.get(options.listApi).then(
+                (res) => {
+                    // refresh mainData success
+                    this.mainData = res.body.content
+                    // refresh currentData
+                    this.currentData = currentArr.call(this, this.$route.query.page)
+                    this.totalItems = res.body.content.length
+                    // show success message
+                    this.$message({
+                        message: '修改成功!',
+                        type: 'success'
+                    })
+                    // dialog close
+                    this.dialogFormVisible = false
+                }, () => {
+                    this.$message({
+                        message: '获取数据失败，请重试',
+                        type: 'error'
+                    })
+                }
+            )
+        },
+        (err) => {
+            // dialog close
+            this.dialogFormVisible = false
+            this.editloading = false
+            // error
+            this.$message({
+                message: err.body,
+                type: 'error'
+            })
+        }
+    )
 }
 
 const initList = function (options) {
@@ -373,6 +398,7 @@ const initList = function (options) {
 		this.loading = false
 		// load main data		
 		if (options.filter) {
+		    console.log('a')
 			// filter main data
 			options.filter.forEach((item) => {
 				res.body.content.forEach((e, i) => {
@@ -390,6 +416,7 @@ const initList = function (options) {
 				})
 			})
 		} else if (options.additem) {
+            console.log('b')
 			options.additem.forEach((item) => {
 				// maindata
 				res.body.content.forEach((e, i) => {
@@ -523,6 +550,7 @@ export {
 	handleDelete,
 	handleSubmit,
 	handleEdit,
+    handleUpdate,
 	initList,
 	handleRoute,
 	formatMenuList,
