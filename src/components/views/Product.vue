@@ -38,11 +38,11 @@
         <!-- add component -->
         <el-dialog :title="isedit?'修改':'添加'" v-model="dialogFormVisible" @close="handleReset">
             <el-form :model="form" ref="form" label-width="80px" v-loading="editloading">
-                <el-form-item label="标题" prop="name.ch" :rules="{required: true, trigger: 'blur'}">
-                    <el-input v-model="form.name.ch" auto-complete="off" placeholder="例：标题（中文）"></el-input>
+                <el-form-item label="产品名" prop="name.ch" :rules="{required: true, trigger: 'blur'}">
+                    <el-input v-model="form.name.ch" auto-complete="off" placeholder="例：产品名（中文）"></el-input>
                 </el-form-item>
-                <el-form-item label="Title" prop="name.en" :rules="{required: true, trigger: 'blur'}">
-                    <el-input v-model="form.name.en" auto-complete="off" placeholder="e.g. Title（English）"></el-input>
+                <el-form-item label="Product Name" prop="name.en" :rules="{required: true, trigger: 'blur'}">
+                    <el-input v-model="form.name.en" auto-complete="off" placeholder="e.g. Product Name（English）"></el-input>
                 </el-form-item>
                 <el-form-item label="优先级">
                     <el-input v-model="form.index" auto-complete="off" placeholder="必须是数字"></el-input>
@@ -50,12 +50,55 @@
                 <el-form-item label="链接">
                     <el-input v-model="form.link" auto-complete="off" placeholder="例：跳转至其他地方，如：商城等的外链"></el-input>
                 </el-form-item>
+
+                <el-card class="box-card" v-for="(section, index) in form.sections">
+                    <div slot="header" class="clearfix">
+                        <span style="font-weight: bold;">区块{{index}}</span>
+                        <el-button style="float: right;" type="danger" icon="minus" size="mini" v-if="index>0" @click="removeSection(section)">删除</el-button>
+                    </div>
+                    <div>
+                        <el-form-item label="标题" :prop="'sections.' + index + '.title.ch'" :rules="{required: true, trigger: 'blur'}">
+                            <el-input v-model="section.title.ch" auto-complete="off" placeholder="例：标题（中文）"></el-input>
+                        </el-form-item>
+                        <el-form-item label="Title" :prop="'sections.' + index + '.title.en'" :rules="{required: true, trigger: 'blur'}">
+                            <el-input v-model="section.title.en" auto-complete="off" placeholder="例：Title（English）"></el-input>
+                        </el-form-item>
+                        <el-form-item label="内容" :prop="'sections.' + index + '.content.ch'" :rules="{required: true, trigger: 'blur'}">
+                            <el-input v-model="section.content.ch" auto-complete="off" placeholder="例：内容（中文）" type="textarea" :rows="2"></el-input>
+                        </el-form-item>
+                        <el-form-item label="Content" :prop="'sections.' + index + '.content.en'" :rules="{required: true, trigger: 'blur'}">
+                            <el-input v-model="section.content.en" auto-complete="off" placeholder="例：Content（English）" type="textarea" :rows="2"></el-input>
+                        </el-form-item>
+                        <el-form-item label="区块连接">
+                            <el-input v-model="section.link" auto-complete="off" placeholder="例：当前区块的连接"></el-input>
+                        </el-form-item>
+                        <el-form-item label="文字位置">
+                            <el-select v-model="section.textposition" >
+                                <el-option label="上" value="top"></el-option>
+                                <el-option label="下" value="bottom"></el-option>
+                                <el-option label="左" value="left"></el-option>
+                                <el-option label="右" value="right"></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="图片" :prop="'sections.' + index + '.img'" :rules="{required: true, trigger: 'change'}">
+                            <el-input v-model="section.img" auto-complete="off"></el-input>
+                            <el-upload action="/api/upload/product" :on-success="handleImage.bind(undefined,index)" :on-error="handleuploaderror" accept="image/*" :before-upload="beforeUpload" list-type="picture" :show-file-list="false">
+                                <div v-if="section.img" class="picProview">
+                                    <img :src="section.img">
+                                </div>
+                                <el-button size="small" type="primary" :load="uploading">点击上传</el-button>
+                            </el-upload>
+                        </el-form-item>
+                    </div>
+                </el-card>
+
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button v-if="isedit" type="primary" @click="handleUpdate" :loading="formloading">更 新</el-button>
 
                 <el-button v-else type="primary" @click="handleSubmit" :loading="formloading">提 交</el-button>
 
+                <el-button @click="addSection">增加区块</el-button>
                 <!--<el-button @click="handleReset">重置</el-button>-->
                 <el-button @click="dialogFormVisible = false">取 消</el-button>
             </div>
@@ -77,20 +120,20 @@
                 loading: false,
                 formloading: false,
                 editloading: false,
+                uploading: false,
                 pageSize: 10,
                 currentId: "",
                 dialogTableVisible: false,
                 dialogFormVisible: false,
                 isedit: false,
-                mirroring_logo: "",
-                mirroring_prdpic: "",
+                mirroring_img: "",
                 multipleSelection: [],
                 form: {
                     name: {
                         ch: "",
                         en: ""
                     },
-                    section: [
+                    sections: [
                         {
                             title: {
                                 ch: "",
@@ -111,16 +154,37 @@
             }
         },
         methods: {
+            addSection () {
+                this.form.sections.push({
+                    title: {
+                        ch: "",
+                        en: ""
+                    },
+                    content: {
+                        ch: "",
+                        en: ""
+                    },
+                    img: "",
+                    link: "",
+                    textposition: "left"
+                })
+            },
+            removeSection (item) {
+                let index = this.form.sections.indexOf(item)
+                if (index !== -1) {
+                    this.form.sections.splice(index, 1)
+                }
+            },
             handleSelectionChange (val) {
                 this.multipleSelection = val;
             },
-            handleLogo (response, file, fileList) {
+            handleImage (index, response) {
+                this.uploading = false;
                 this.$message({
                     message: response.filename + "上传已经成功",
                     type: 'success'
                 });
-                response.path = ("/" + response.path.replace(/\\/ig, "/")).replace(/public/ig, "static");
-                this.mirroring_logo = this.form.logo = response.path;
+                this.form.sections[index].img = ("/" + response.path.replace(/\\/ig, "/")).replace(/public/ig, "static");
             },
             handleProductPic (response, file, fileList) {
                 this.$message({
@@ -139,6 +203,7 @@
                 if (!isLt2M) {
                     this.$message.error('上传图片大小不能超过 2MB!');
                 }
+                this.uploading = true;
                 return PIC && isLt2M;
             },
             handleuploaderror () {
@@ -192,9 +257,8 @@
             handleReset () {
                 // reset 表单
                 this.$refs.form.resetFields();
-                this.form.logo = this.mirroring_logo;
-                this.form.prdpic = this.mirroring_prdpic;
                 this.isedit = false;
+                this.form.sections = [this.form.sections.shift()];
             }
         },
         watch: {
@@ -216,7 +280,7 @@
         padding: 2px 0;
     }
     .el-form {
-        width: 440px;
+        width: 100%;
     }
     .picProview {
         width: 100%;
@@ -227,9 +291,16 @@
             width: 100%;
         }
     }
+    .box-card {
+        box-shadow: none;
+        margin-bottom: 20px;
+        &:last-of-type {
+            margin-bottom: 0;
+        }
+    }
 </style>
 <style>
-     .el-upload--picture {
+    .el-upload--picture {
         text-align: left;
     }
 </style>

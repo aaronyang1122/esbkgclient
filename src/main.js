@@ -1,16 +1,15 @@
 import Vue from 'vue'
 import ElementUI from 'element-ui'
-// import Router from 'vue-router'
+import VueQuillEditor from 'vue-quill-editor'
 import 'element-ui/lib/theme-default/index.css'
 import App from './App'
 import router from './router/'
 import store from './store'
 import VueResource from 'vue-resource'
-import administration from './store/modules/menu/administration'
-import { lazyLoading, generateRoutesFromMenu } from './common/common'
 
 Vue.use(ElementUI)
 Vue.use(VueResource)
+Vue.use(VueQuillEditor)
 // Vue.use(Router)
 
 /*Vue.http.interceptors.push((request, next) => {

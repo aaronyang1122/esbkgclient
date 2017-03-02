@@ -237,7 +237,7 @@
 		padding: 2px 0;
 	}
 	.el-form {
-		width: 440px;
+		width: 100%;
 	}
 	.picProview {
 	    width: 100%;

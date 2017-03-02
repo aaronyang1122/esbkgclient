@@ -45,10 +45,12 @@
                     <el-input v-model="form.title.en" auto-complete="off" placeholder="e.g. Title（English）"></el-input>
                 </el-form-item>
                 <el-form-item label="内容" prop="content.ch" :rules="{required: true, trigger: 'blur'}">
-                    <el-input v-model="form.content.ch" auto-complete="off" placeholder="例：内容（中文）"></el-input>
+                    <!--<el-input v-model="form.content.ch" auto-complete="off" placeholder="例：内容（中文）"></el-input>-->
+                    <quill-editor ref="myTextEditor" v-model="form.content.ch" :config="editorOption" style="height: 400px;"></quill-editor>
                 </el-form-item>
                 <el-form-item label="Content" prop="content.en" :rules="{required: true, trigger: 'blur'}">
-                    <el-input v-model.number="form.content.en" auto-complete="off" placeholder="e.g. Content(English)"></el-input>
+                    <!--<el-input v-model.number="form.content.en" auto-complete="off" placeholder="e.g. Content(English)"></el-input>-->
+                    <quill-editor ref="myTextEditor"  v-model="form.content.en" :config="editorOption" style="height: 400px;"></quill-editor>
                 </el-form-item>
                 <el-form-item label="优先级">
                     <el-input v-model="form.index" auto-complete="off" placeholder="必须是数字"></el-input>
@@ -96,6 +98,25 @@
                 isedit: false,
                 mirroring_img: "",
                 multipleSelection: [],
+                editorOption: {
+                    modules: {
+                        toolbar: [
+                            ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+
+                            [{'list': 'ordered'}, {'list': 'bullet'}],
+                            [{'indent': '-1'}, {'indent': '+1'}],          // outdent/indent
+
+                            [{'color': []}],          // dropdown with defaults from theme
+                            [{'align': []}],
+
+                            ['link', 'image'],
+
+                            [{'size': ['small', false, 'large', 'huge']}],  // custom dropdown
+                            [{'header': [1, 2, 3, 4, 5, 6, false]}]
+                        ]
+                    },
+                    placeholder: '请输入内容...'
+                },
                 form: {
                     title: {
                         ch: "",
@@ -111,6 +132,19 @@
             }
         },
         methods: {
+            onEditorBlur (editor) {
+                console.log('editor blur!', editor)
+            },
+            onEditorFocus (editor) {
+                console.log('editor focus!', editor)
+            },
+            onEditorReady (editor) {
+                console.log('editor ready!', editor)
+            },
+            onEditorChange ({ editor, html, text }) {
+                // console.log('editor change!', editor, html, text)
+                this.content = html
+            },
             handleSelectionChange (val) {
                 this.multipleSelection = val;
             },
@@ -216,7 +250,7 @@
         padding: 2px 0;
     }
     .el-form {
-        width: 440px;
+        width: 100%;
     }
     .picProview {
         width: 100%;
@@ -229,8 +263,17 @@
     }
 </style>
 <style>
-     .el-upload--picture {
+    .el-upload--picture {
         text-align: left;
+    }
+    .ql-editing{
+        z-index: 1;
+    }
+    .ql-snow .ql-picker {
+        height: auto;
+    }
+    .ql-toolbar.ql-snow, .ql-container.ql-snow {
+        border: 1px solid #bfcbd9;
     }
 </style>
 
