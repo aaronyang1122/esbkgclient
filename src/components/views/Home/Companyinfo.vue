@@ -39,9 +39,6 @@
     </section>
 </template>
 <script type="text/javascript">
-    import { mapGetters, mapActions } from 'vuex'
-    import { handleCurrentChange, handleSizeChange, handleDelete, handleSubmit, handleEdit, initList, handleRoute, handleUpdate } from '../../../common/common'
-
     export default {
         data () {
             return {
@@ -128,27 +125,29 @@
         watch: {},
         created () {
             this.$http.get(
-                    '/static/data/companyinfo.json',
-                    {
-                        before (request) {
-                            this.loading = true;
-                        }
+                '/static/data/companyinfo.json',
+                {
+                    before (request) {
+                        this.loading = true;
                     }
+                }
             ).then(
-                    (res) => {
-                        // success
-                        this.loading = false;
+                (res) => {
+                    // success
+                    this.loading = false;
+                    if (res.body.hasOwnProperty('intro')) {
                         this.form = res.body;
-                    },
-                    () => {
-                        // error
-                        this.loading = false
-                        // error
-                        this.$message({
-                            message: '获取失败',
-                            type: 'error'
-                        })
                     }
+                },
+                () => {
+                    // error
+                    this.loading = false
+                    // error
+                    this.$message({
+                        message: '获取失败',
+                        type: 'error'
+                    })
+                }
             )
         }
     }

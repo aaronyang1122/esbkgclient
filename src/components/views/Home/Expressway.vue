@@ -46,9 +46,6 @@
     </section>
 </template>
 <script type="text/javascript">
-    import { mapGetters, mapActions } from 'vuex'
-    import { handleCurrentChange, handleSizeChange, handleDelete, handleSubmit, handleEdit, initList, handleRoute, handleUpdate } from '../../../common/common'
-
     export default {
         data () {
             return {
@@ -160,32 +157,32 @@
                 this.$refs.form.validate((valid) => {
                     if (valid) {
                         this.$http.post(
-                                '/api/staticdata/companyinfo',
-                                this.form,
-                                {
-                                    before (request) {
-                                        this.loading = true;
-                                    },
-                                    emulateJSON: true
-                                }
-                        ).then(
-                                (res) => {
-                                    // success
-                                    this.loading = false;
-                                    this.$message({
-                                        message: '更新成功',
-                                        type: 'success'
-                                    })
+                            '/api/staticdata/expressway',
+                            this.form,
+                            {
+                                before (request) {
+                                    this.loading = true;
                                 },
-                                () => {
-                                    // error
-                                    this.loading = false
-                                    // error
-                                    this.$message({
-                                        message: '更新失败',
-                                        type: 'error'
-                                    })
-                                }
+                                emulateJSON: true
+                            }
+                        ).then(
+                            (res) => {
+                                // success
+                                this.loading = false;
+                                this.$message({
+                                    message: '更新成功',
+                                    type: 'success'
+                                })
+                            },
+                            () => {
+                                // error
+                                this.loading = false
+                                // error
+                                this.$message({
+                                    message: '更新失败',
+                                    type: 'error'
+                                })
+                            }
                         )
                     } else {
                         // not validated
@@ -198,29 +195,29 @@
         watch: {},
         created () {
             this.$http.get(
-                    '/static/data/expressway.json',
-                    {
-                        before (request) {
-                            this.loading = true;
-                        }
+                '/static/data/expressway.json',
+                {
+                    before (request) {
+                        this.loading = true;
                     }
+                }
             ).then(
-                    (res) => {
-                        // success
-                        this.loading = false;
-                        if (res.body.hasOwnProperty('items')) {
-                            this.form = res.body;
-                        }
-                    },
-                    () => {
-                        // error
-                        this.loading = false
-                        // error
-                        this.$message({
-                            message: '获取失败',
-                            type: 'error'
-                        })
+                (res) => {
+                    // success
+                    this.loading = false;
+                    if (res.body.hasOwnProperty('items')) {
+                        this.form = res.body;
                     }
+                },
+                () => {
+                    // error
+                    this.loading = false
+                    // error
+                    this.$message({
+                        message: '获取失败',
+                        type: 'error'
+                    })
+                }
             )
         }
     }

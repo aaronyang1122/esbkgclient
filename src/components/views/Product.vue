@@ -37,7 +37,7 @@
 
         <!-- add component -->
         <el-dialog :title="isedit?'修改':'添加'" v-model="dialogFormVisible" @close="handleReset" size="large">
-            <el-form :model="form" ref="form" label-width="80px" v-loading="editloading">
+            <el-form :model="form" ref="form" label-width="120px" v-loading="editloading">
                 <el-form-item label="产品名" prop="name.ch" :rules="{required: true, trigger: 'blur'}">
                     <el-input v-model="form.name.ch" auto-complete="off" placeholder="例：产品名（中文）"></el-input>
                 </el-form-item>
@@ -47,10 +47,15 @@
                 <el-form-item label="优先级">
                     <el-input v-model="form.index" auto-complete="off" placeholder="必须是数字"></el-input>
                 </el-form-item>
-                <el-form-item label="链接">
+                <el-form-item label="按钮链接">
                     <el-input v-model="form.link" auto-complete="off" placeholder="例：跳转至其他地方，如：商城等的外链"></el-input>
                 </el-form-item>
-
+                <el-form-item label="按钮文字">
+                    <el-input v-model="form.linktext.ch" auto-complete="off" placeholder="例：按钮文字(中文)"></el-input>
+                </el-form-item>
+                <el-form-item label="Button Text">
+                    <el-input v-model="form.linktext.en" auto-complete="off" placeholder="例：Button Text(English)"></el-input>
+                </el-form-item>
                 <el-card class="box-card" v-for="(section, index) in form.sections">
                     <div slot="header" class="clearfix">
                         <span style="font-weight: bold;">区块{{index}}</span>
@@ -71,6 +76,12 @@
                         </el-form-item>
                         <el-form-item label="区块连接">
                             <el-input v-model="section.link" auto-complete="off" placeholder="例：当前区块的连接"></el-input>
+                        </el-form-item>
+                        <el-form-item label="按钮文字">
+                            <el-input v-model="section.linktext.ch" auto-complete="off" placeholder="例：按钮文字(中文)"></el-input>
+                        </el-form-item>
+                        <el-form-item label="Button Text">
+                            <el-input v-model="section.linktext.en" auto-complete="off" placeholder="例：Button Text(English)"></el-input>
                         </el-form-item>
                         <el-form-item label="文字位置">
                             <el-select v-model="section.textposition" >
@@ -145,11 +156,19 @@
                             },
                             img: "",
                             link: "",
+                            linktext: {
+                                ch: "",
+                                en: ""
+                            },
                             textposition: "left"
                         }
                     ],
                     index: 0,
-                    link: ""
+                    link: "",
+                    linktext: {
+                        ch: "",
+                        en: ""
+                    }
                 }
             }
         },

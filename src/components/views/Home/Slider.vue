@@ -53,6 +53,9 @@
                 <el-form-item label="优先级">
                     <el-input v-model="form.index" auto-complete="off" placeholder="必须是数字"></el-input>
                 </el-form-item>
+                <el-form-item label="链接">
+                    <el-input v-model="form.link" auto-complete="off" placeholder="链接"></el-input>
+                </el-form-item>
                 <el-form-item label="文字位置">
                     <el-select v-model="form.textposition" >
                         <el-option label="上" value="top"></el-option>
@@ -126,8 +129,8 @@
                       index: 0,
                       textposition: "left",
                       logo: "",
-                      prdpic: ""
-
+                      prdpic: "",
+                      link: ""
                 }
 			}
 		},
