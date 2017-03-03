@@ -90,7 +90,7 @@
                 this.$refs.form.validate((valid) => {
                     if (valid) {
                         this.$http.post(
-                            '/api/uploadcompanyinfo',
+                            '/api/staticdata/companyinfo',
                             this.form,
                             {
                                 before (request) {
