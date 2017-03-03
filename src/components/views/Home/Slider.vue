@@ -36,7 +36,7 @@
         </div>
 
         <!-- add component -->
-        <el-dialog :title="isedit?'修改':'添加'" v-model="dialogFormVisible" @close="handleReset">
+        <el-dialog :title="isedit?'修改':'添加'" v-model="dialogFormVisible" @close="handleReset" size="large">
             <el-form :model="form" ref="form" label-width="80px" v-loading="editloading">
                 <el-form-item label="标题" prop="title.ch" :rules="{required: true, trigger: 'blur'}">
                     <el-input v-model="form.title.ch" auto-complete="off" placeholder="例：标题（中文）"></el-input>
@@ -152,6 +152,7 @@
                 this.mirroring_prdpic = this.form.prdpic = response.path;
             },
             beforeUpload (file) {
+		        console.log(file)
                 const PIC = file.type === 'image/jpeg' || file.type === 'image/png';
                 const isLt2M = file.size / 1024 / 1024 < 2;
                 if (!PIC) {

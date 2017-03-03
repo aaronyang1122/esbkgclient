@@ -1,7 +1,7 @@
 <template>
 	<div class="collapse pos-rlt navbar-collapse box-shadow bg-white-only">
 		<section class="navbar-right">
-			<span class="hidden-sm hidden-md mg-r-15">{{ username }}</span>
+			<!--<span class="hidden-sm hidden-md mg-r-15">{{ username }}</span>-->
 			<el-button type="primary" size="small" class="navbar-btn" @click="logout">退出</el-button>
 		</section>
   </div>

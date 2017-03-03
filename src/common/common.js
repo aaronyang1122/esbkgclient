@@ -337,52 +337,60 @@ const handleEdit = function (options) {
 
 const handleUpdate = function (options) {
     // submit some edit
-    var _data = {}
-    this.$http.post(
-        options.api,
-        options.data,
-        {
-            before (request) {
-                this.editloading = true
-            },
-            params: options.query,
-            emulateJSON: true
-        }
-    ).then(
-        (res) => {
-            this.$http.get(options.listApi).then(
+    this.$refs.form.validate((valid) => {
+        if (valid) {
+        	// be validated
+            this.$http.post(
+                options.api,
+                options.data,
+                {
+                    before (request) {
+                        this.editloading = true
+                    },
+                    params: options.query,
+                    emulateJSON: true
+                }
+            ).then(
                 (res) => {
-                    // refresh mainData success
-                    this.mainData = res.body.content
-                    // refresh currentData
-                    this.currentData = currentArr.call(this, this.$route.query.page)
-                    this.totalItems = res.body.content.length
-                    // show success message
-                    this.$message({
-                        message: '修改成功!',
-                        type: 'success'
-                    })
+                    this.$http.get(options.listApi).then(
+                        (res) => {
+                            // refresh mainData success
+                            this.mainData = res.body.content
+                            // refresh currentData
+                            this.currentData = currentArr.call(this, this.$route.query.page)
+                            this.totalItems = res.body.content.length
+                            // show success message
+                            this.$message({
+                                message: '修改成功!',
+                                type: 'success'
+                            })
+                            // dialog close
+                            this.dialogFormVisible = false
+                        }, () => {
+                            this.$message({
+                                message: '获取数据失败，请重试',
+                                type: 'error'
+                            })
+                        }
+                    )
+                },
+                (err) => {
                     // dialog close
                     this.dialogFormVisible = false
-                }, () => {
+                    this.editloading = false
+                    // error
                     this.$message({
-                        message: '获取数据失败，请重试',
+                        message: err.body,
                         type: 'error'
                     })
                 }
             )
-        },
-        (err) => {
-            // dialog close
-            this.dialogFormVisible = false
-            this.editloading = false
-            // error
-            this.$message({
-                message: err.body,
-                type: 'error'
-            })
+        } else {
+        	// not validated
+            console.log('submit is not validate!!');
+            return false;
         }
-    )
+    })
 }
 
 const initList = function (options) {
