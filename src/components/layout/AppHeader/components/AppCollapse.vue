@@ -8,6 +8,7 @@
 </template>
 
 <script>
+import store from '../../../../store';
 	const _init = Object.assign({
 		// default params
 			user: '游客',
@@ -22,7 +23,9 @@
 		},
 		methods: {
 			logout () {
-				_init.logout()
+				store.dispatch('setLoginStatus', false).then(() => {
+					this.$router.push({ path: '/signin' })
+				})
 			}
 		}
 	}

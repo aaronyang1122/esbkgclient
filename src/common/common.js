@@ -514,9 +514,9 @@ const generateRoutesFromMenu = function (menu = [], routes = []) {
   return routes
 }
 
-const requireAuth = (isAuth, store) => {
+const requireAuth = (store) => {
 	return function (to, from, next) {
-	  if (isAuth) {
+	  if (store.getters.getLoginStatus) {
 	  	if (to.name === 'main') {
 				next({name: store.getters.defaultItem})
 			} else {

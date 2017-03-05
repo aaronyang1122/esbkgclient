@@ -28,7 +28,7 @@ export default new Router({
         {
             name: 'main',
             path: '/',
-            beforeEnter: requireAuth(true, store),
+            beforeEnter: requireAuth(store),
             component: lazyLoading('Main'),
             children: [
                 ...generateRoutesFromMenu(_list)

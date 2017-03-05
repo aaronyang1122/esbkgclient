@@ -1,15 +1,5 @@
-export const EXPAND_MENU = 'EXPAND_MENU'
-
 export const DEFAULT_MENU_ITEM = 'DEFAULT_MENU_ITEM'
-
-export const SET_TOKEN = 'SET_TOKEN'
-
-export const SET_ALLGAME_LIST = 'SET_ALLGAME_LIST'
-
-export const SET_ALLROLE_LIST = 'SET_ALLROLE_LIST'
-
-export const SET_ALLMENU_LIST = 'SET_ALLMENU_LIST'
 
 export const SET_MENU_ITEMS = 'SET_MENU_ITEMS'
 
-export const SET_ALLROLE_MENUS = 'SET_ALLROLE_MENUS'
+export const SET_LOGIN_STATUS = 'SET_LOGIN_STATUS'

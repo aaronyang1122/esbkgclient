@@ -3,9 +3,9 @@
 		<a href="" class="navbar-brand block m-t">登录</a>
 		<div class="m-b-lg">
 			<div class="wrapper text-center">
-				<strong>台管理系统</strong>
+				<strong>智视官网后台管理系统</strong>
 			</div>
-			<form name="form" class="form-validation" @submit.prevent="submit">
+			<form name="form" class="form-validation">
 				<!--<div class="text-danger wrapper text-center">{{message.error}}</div>-->
 				<div class="list-group list-group-sm">
 					<div class="list-group-item">
@@ -15,25 +15,25 @@
 						<match-box :clear-button="form.password.clear" :placeholder="form.password.placeholder" v-model="form.password.value" :required="true" :type="form.password.type"></match-box>
 					</div>
 				</div>
-				<button type="submit" class="btn btn-lg btn-primary btn-block" >登 录</button>
 			</form>
+			<button type="submit" class="btn btn-lg btn-primary btn-block" :loading="loading" @click="submit">登 录</button>
 		</div>
 		<div class="text-center">
 			<p>
-				<small class="text-muted">Web app framework base on Bootstrap and Vue<br>© 2016</small>
+				<small class="text-muted">Web app framework base on Bootstrap and Vue<br>© 2017</small>
 			</p>
 		</div>   
 	</div>
 </template>
 <script>
 	import matchBox from '../plugin/MatchBox.vue';
-//	import { toBase64, apiURL, checkStatus, parseJSON, unauthorized } from '../../api/api';
-	import 'whatwg-fetch';
-	
+	import store from '../../store';
+
 	export default {
 		data () {
 			return {
 				result: {},
+				loading: false,
 				form: {
 					username: {
 						placeholder: '用户名',
@@ -53,105 +53,58 @@
 			matchBox
 		},
 		methods: {
-			handleValidate (e) {
-        var self = this;
-        // get validity instance
-        var $validity = e.target.$validity;
-        // run validate method !!
-        $validity.validate(function () {
-          // keep validation result from result property of validity instance
-          self.result = $validity.result
-        })
-    	},
-    	submit () {
-    		this.test = this.$store.state.login.custom
-    		// ie9
-    		if (this.form.username.value === '' || this.form.password.value === '') {
-    			// throw error
-//  			this.message.error = '用户名、密码不能为空';
+			submit () {
+				this.test = this.$store.state.login.custom
+				// ie9
+				if (this.form.username.value === '' || this.form.password.value === '') {
+					// throw error
+	//  			this.message.error = '用户名、密码不能为空';
 					this.$message({
 					  message: '用户名、密码不能为空',
 					  type: 'error'
 					});
-    		} else {
-//  			this.message.error = '';
-    			// 先获取 token 再获取用户资料信息
-    			this.login()
-    			.then(
-    				() => {
-    					// success
-    					// getProfile
-    					this.getProfile()
-    						.then(
-    							() => {
-    								// success 
-    								// 跳转首页
-    								this.$router.push({name: 'check'})
-    							},
-    							(err) => {
-    								// failed
-	    							console.warn(err)
-    							}
-    						);
-	    			}, 
-	    			(err) => {
-	    				// failed
-	    				console.warn(err)
-	    			}
-	    		);
-    		}
-	    },
-	    login () {
-	    	return new Promise((resolve, reject) => {
-	    		// 登录获取 token
-					fetch(apiURL + '/', {
-					  method: 'GET',
-					  headers: {
-					    'Authorization': 'Basic ' + toBase64([this.form.username.value, this.form.password.value])
-					  }
-					})
-						.then(checkStatus)
-						.then(response => {
-							this.$store.dispatch('settoken', response.headers.get('x-auth-token'));
-							// resolve
-							resolve();
-						})
-						.catch(error => {
-							// 用户名不合法 或 token 过期
-							unauthorized(error, this);
-//					  	if (error.status === 401) {
-//					  		this.message.error = '用户名密码错误，或账户不存在';
-//					  	} else {
-//					  		console.warn(error);
-//					  	}
-					  	// reject
-					  	reject(error);
-					  })
-	    	});
-	    },
-	    getProfile () {
-	    	return new Promise((resolve, reject) => {
-	    		fetch(apiURL + '/profile', {
-					  method: 'GET',
-					  headers: {
-					    'x-auth-token': this.$store.state.login.token
-					  }
-					})
-	    			.then(checkStatus)
-	    			.then(parseJSON)
-	    			.then(data => {
-							this.$store.dispatch('setcustom', data);
-							resolve();
-						})
-	    			.catch(error => {
-	    				unauthorized(error, this);
-//	    				this.message.error = '获取用户信息错误';
-					  	// reject
-					  	reject(error);
-					  })
-	    	});
-	    }
-   	},
+				} else {
+					this.$http.post(
+						'api/auth',
+						{
+							username: this.form.username.value,
+							password: this.form.password.value
+						},
+						{
+							before (request) {
+								this.loading = true
+							},
+							emulateJSON: true
+						}
+					).then(
+						(res) => {
+							console.log(res.body)
+							switch (res.body.isAuthed) {
+								case 0:
+								    this.$message({
+                                        message: "用户名或密码错误，请重新再试",
+                                        type: 'error'
+                                    })
+                                    break;
+                                case 1:
+                                    store.dispatch('setLoginStatus', true).then(() => {
+                                        this.$router.push({ path: '/' })
+                                    })
+                                    break;
+							}
+						},
+						(err) => {
+							this.loading = false
+							// error
+							this.$message({
+								message: err.body,
+								type: 'error'
+							})
+						}
+					)
+				}
+			}
+		},
 		watch: {
 //			'form.username.value' (val, oldVal) {
 //				console.log(val)
