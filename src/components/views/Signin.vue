@@ -78,7 +78,6 @@
 						}
 					).then(
 						(res) => {
-							console.log(res.body)
 							switch (res.body.isAuthed) {
 								case 0:
 								    this.$message({
