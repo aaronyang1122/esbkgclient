@@ -44,12 +44,6 @@
                 <el-form-item label="Title" prop="title.en" :rules="{required: true, trigger: 'blur'}">
                     <el-input v-model="form.title.en" auto-complete="off" placeholder="e.g. Title（English）"></el-input>
                 </el-form-item>
-                <el-form-item label="内容" prop="content.ch" :rules="{required: true, trigger: 'blur'}">
-                    <el-input v-model="form.content.ch" auto-complete="off" placeholder="例：内容（中文）"></el-input>
-                </el-form-item>
-                <el-form-item label="Content" prop="content.en" :rules="{required: true, trigger: 'blur'}">
-                    <el-input v-model.number="form.content.en" auto-complete="off" placeholder="e.g. Content(English)"></el-input>
-                </el-form-item>
                 <el-form-item label="优先级">
                     <el-input v-model="form.index" auto-complete="off" placeholder="必须是数字"></el-input>
                 </el-form-item>
@@ -119,10 +113,6 @@
 				multipleSelection: [],
 				form: {
                       title: {
-                         ch: "",
-                         en: ""
-                      },
-                      content: {
                          ch: "",
                          en: ""
                       },
