@@ -65,7 +65,7 @@
 					});
 				} else {
 					this.$http.post(
-						'api/auth',
+						'/api/auth',
 						{
 							username: this.form.username.value,
 							password: this.form.password.value
