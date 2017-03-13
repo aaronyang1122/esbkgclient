@@ -68,6 +68,12 @@
                         <el-form-item label="Title" :prop="'sections.' + index + '.title.en'" :rules="{required: true, trigger: 'blur'}">
                             <el-input v-model="section.title.en" auto-complete="off" placeholder="例：Title（English）"></el-input>
                         </el-form-item>
+                        <el-form-item label="标题字体颜色">
+                            <el-input v-model="section.titlecolor" auto-complete="off" placeholder="例：#EAA949"></el-input>
+                        </el-form-item>
+                        <el-form-item label="区块背景颜色">
+                            <el-input v-model="section.bgcolor" auto-complete="off" placeholder="例：#FFFFFF"></el-input>
+                        </el-form-item>
                         <el-form-item label="内容" :prop="'sections.' + index + '.content.ch'" :rules="{required: true, trigger: 'blur'}">
                             <el-input v-model="section.content.ch" auto-complete="off" placeholder="例：内容（中文）" type="textarea" :rows="2"></el-input>
                         </el-form-item>
@@ -156,6 +162,8 @@
                             },
                             img: "",
                             link: "",
+                            titlecolor: "#eaa949",
+                            bgcolor: "#FFFFFF",
                             linktext: {
                                 ch: "",
                                 en: ""
