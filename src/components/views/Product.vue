@@ -193,6 +193,12 @@
                     },
                     img: "",
                     link: "",
+                    titlecolor: "#eaa949",
+                    bgcolor: "#FFFFFF",
+                    linktext: {
+                        ch: "",
+                        en: ""
+                    },
                     textposition: "left"
                 })
             },
