@@ -99,9 +99,18 @@
                         </el-form-item>
                         <el-form-item label="图片" :prop="'sections.' + index + '.img'" :rules="{required: true, trigger: 'change'}">
                             <el-input v-model="section.img" auto-complete="off"></el-input>
-                            <el-upload action="/api/upload/product" :on-success="handleImage.bind(undefined,index)" :on-error="handleuploaderror" accept="image/*" :before-upload="beforeUpload" list-type="picture" :show-file-list="false">
+                            <el-upload action="/api/upload/product" :on-success="handleImage.bind(undefined,index,'img')" :on-error="handleuploaderror" accept="image/*" :before-upload="beforeUpload" list-type="picture" :show-file-list="false">
                                 <div v-if="section.img" class="picProview">
                                     <img :src="section.img">
+                                </div>
+                                <el-button size="small" type="primary" :load="uploading">点击上传</el-button>
+                            </el-upload>
+                        </el-form-item>
+                        <el-form-item label="图片英语">
+                            <el-input v-model="section.imgExtended" auto-complete="off" placeholder="如果有图片中带文字，请在此上传英文内容图片"></el-input>
+                            <el-upload action="/api/upload/product" :on-success="handleImage.bind(undefined,index,'imgExtended')" :on-error="handleuploaderror" accept="image/*" :before-upload="beforeUpload" list-type="picture" :show-file-list="false">
+                                <div v-if="section.imgExtended" class="picProview">
+                                    <img :src="section.imgExtended">
                                 </div>
                                 <el-button size="small" type="primary" :load="uploading">点击上传</el-button>
                             </el-upload>
@@ -161,6 +170,7 @@
                                 en: ""
                             },
                             img: "",
+                            imgExtended: "",
                             link: "",
                             titlecolor: "#eaa949",
                             bgcolor: "#FFFFFF",
@@ -211,21 +221,13 @@
             handleSelectionChange (val) {
                 this.multipleSelection = val;
             },
-            handleImage (index, response) {
+            handleImage (index, tag, response) {
                 this.uploading = false;
                 this.$message({
                     message: response.filename + "上传已经成功",
                     type: 'success'
                 });
-                this.form.sections[index].img = ("/" + response.path.replace(/\\/ig, "/")).replace(/public/ig, "static");
-            },
-            handleProductPic (response, file, fileList) {
-                this.$message({
-                    message: response.filename + "上传已经成功",
-                    type: 'success'
-                });
-                response.path = ("/" + response.path.replace(/\\/ig, "/")).replace(/public/ig, "static");
-                this.mirroring_prdpic = this.form.prdpic = response.path;
+                this.form.sections[index][tag] = ("/" + response.path.replace(/\\/ig, "/")).replace(/public/ig, "static");
             },
             beforeUpload (file) {
                 const PIC = file.type === 'image/jpeg' || file.type === 'image/png';
