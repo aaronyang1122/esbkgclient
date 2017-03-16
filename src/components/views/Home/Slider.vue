@@ -16,7 +16,7 @@
                 <el-table :data="currentData" v-loading.body="loading" style="width: 100%" border @selection-change="handleSelectionChange">
                     <el-table-column type="selection" width="55"></el-table-column>
                     <el-table-column prop="index" label="index" width="90"></el-table-column>
-                    <el-table-column prop="title.ch" label="标题"></el-table-column>
+                    <el-table-column prop="title" label="标题"></el-table-column>
                     <el-table-column prop="createtime" label="创建时间"></el-table-column>
                     <el-table-column prop="updatetime" label="更新时间"></el-table-column>
                     <el-table-column inline-template :context="_self" label="操作" width="90">
@@ -37,12 +37,9 @@
 
         <!-- add component -->
         <el-dialog :title="isedit?'修改':'添加'" v-model="dialogFormVisible" @close="handleReset" size="large">
-            <el-form :model="form" ref="form" label-width="80px" v-loading="editloading">
-                <el-form-item label="标题" prop="title.ch" :rules="{required: true, trigger: 'blur'}">
-                    <el-input v-model="form.title.ch" auto-complete="off" placeholder="例：标题（中文）"></el-input>
-                </el-form-item>
-                <el-form-item label="Title" prop="title.en" :rules="{required: true, trigger: 'blur'}">
-                    <el-input v-model="form.title.en" auto-complete="off" placeholder="e.g. Title（English）"></el-input>
+            <el-form :model="form" ref="form" label-width="150px" v-loading="editloading">
+                <el-form-item label="标题">
+                    <el-input v-model="form.title" auto-complete="off" placeholder="例：标题（仅供后台识别查询）"></el-input>
                 </el-form-item>
                 <el-form-item label="优先级">
                     <el-input v-model="form.index" auto-complete="off" placeholder="必须是数字"></el-input>
@@ -50,28 +47,38 @@
                 <el-form-item label="链接">
                     <el-input v-model="form.link" auto-complete="off" placeholder="链接"></el-input>
                 </el-form-item>
-                <el-form-item label="文字位置">
-                    <el-select v-model="form.textposition" >
-                        <el-option label="上" value="top"></el-option>
-                        <el-option label="下" value="bottom"></el-option>
-                        <el-option label="左" value="left"></el-option>
-                        <el-option label="右" value="right"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="Logo" prop="logo" :rules="{required: true, trigger: 'change'}">
-                    <el-input v-model="form.logo" auto-complete="off"></el-input>
-                    <el-upload action="/api/upload/slider" :on-success="handleLogo" :on-error="handleuploaderror" accept="image/*" :before-upload="beforeUpload" list-type="picture" :show-file-list="false">
-                        <div v-if="form.logo" class="picProview">
-                            <img :src="form.logo">
+                <el-form-item label="PC图片-中文" prop="imgpc.ch" :rules="{required: true, trigger: 'change'}">
+                    <el-input v-model="form.imgpc.ch" auto-complete="off"></el-input>
+                    <el-upload action="/api/upload/slider" :on-success="handleSuccess.bind(undefined, 'imgpc.ch')" :on-error="handleuploaderror" accept="image/*" :before-upload="beforeUpload" list-type="picture" :show-file-list="false">
+                        <div v-if="form.imgpc.ch" class="picProview">
+                            <img :src="form.imgpc.ch">
                         </div>
                         <el-button size="small" type="primary">点击上传</el-button>
                     </el-upload>
                 </el-form-item>
-                <el-form-item label="商品图" prop="prdpic" :rules="{required: true, trigger: 'change'}">
-                    <el-input v-model.number="form.prdpic" auto-complete="off"></el-input>
-                    <el-upload action="/api/upload/slider" :on-success="handleProductPic" :on-error="handleuploaderror" accept="image/*" :before-upload="beforeUpload" list-type="picture" :show-file-list="false">
-                        <div v-if="form.prdpic" class="picProview">
-                            <img :src="form.prdpic">
+                <el-form-item label="PC图片-英文" prop="imgpc.en" :rules="{required: true, trigger: 'change'}">
+                    <el-input v-model="form.imgpc.en" auto-complete="off"></el-input>
+                    <el-upload action="/api/upload/slider" :on-success="handleSuccess.bind(undefined, 'imgpc.en')" :on-error="handleuploaderror" accept="image/*" :before-upload="beforeUpload" list-type="picture" :show-file-list="false">
+                        <div v-if="form.imgpc.en" class="picProview">
+                            <img :src="form.imgpc.en">
+                        </div>
+                        <el-button size="small" type="primary">点击上传</el-button>
+                    </el-upload>
+                </el-form-item>
+                <el-form-item label="Mobile图片-中文" prop="imgmobile.ch" :rules="{required: true, trigger: 'change'}">
+                    <el-input v-model="form.imgmobile.ch" auto-complete="off"></el-input>
+                    <el-upload action="/api/upload/slider" :on-success="handleSuccess.bind(undefined, 'imgmobile.ch')" :on-error="handleuploaderror" accept="image/*" :before-upload="beforeUpload" list-type="picture" :show-file-list="false">
+                        <div v-if="form.imgmobile.ch" class="picProview">
+                            <img :src="form.imgmobile.ch">
+                        </div>
+                        <el-button size="small" type="primary">点击上传</el-button>
+                    </el-upload>
+                </el-form-item>
+                <el-form-item label="Mobile图片-英文" prop="imgmobile.en" :rules="{required: true, trigger: 'change'}">
+                    <el-input v-model="form.imgmobile.en" auto-complete="off"></el-input>
+                    <el-upload action="/api/upload/slider" :on-success="handleSuccess.bind(undefined, 'imgmobile.en')" :on-error="handleuploaderror" accept="image/*" :before-upload="beforeUpload" list-type="picture" :show-file-list="false">
+                        <div v-if="form.imgmobile.en" class="picProview">
+                            <img :src="form.imgmobile.en">
                         </div>
                         <el-button size="small" type="primary">点击上传</el-button>
                     </el-upload>
@@ -112,37 +119,31 @@
 				mirroring_prdpic: "",
 				multipleSelection: [],
 				form: {
-                      title: {
-                         ch: "",
-                         en: ""
-                      },
-                      index: 0,
-                      textposition: "left",
-                      logo: "",
-                      prdpic: "",
-                      link: ""
+                    title: "",
+                    index: 0,
+                    link: "",
+                    imgpc: {
+                        ch: "",
+                        en: ""
+                    },
+                    imgmobile: {
+                        ch: "",
+                        en: ""
+                    }
                 }
 			}
 		},
 		methods: {
-		    handleSelectionChange (val) {
+            handleSelectionChange (val) {
                 this.multipleSelection = val;
             },
-		    handleLogo (response, file, fileList) {
+            handleSuccess (tag, response, file, fileList) {
                 this.$message({
                     message: response.filename + "上传已经成功",
                     type: 'success'
                 });
-		        response.path = ("/" + response.path.replace(/\\/ig, "/")).replace(/public/ig, "static");
-                this.mirroring_logo = this.form.logo = response.path;
-            },
-            handleProductPic (response, file, fileList) {
-                this.$message({
-                      message: response.filename + "上传已经成功",
-                      type: 'success'
-                    });
-		        response.path = ("/" + response.path.replace(/\\/ig, "/")).replace(/public/ig, "static");
-                this.mirroring_prdpic = this.form.prdpic = response.path;
+                response.path = ("/" + response.path.replace(/\\/ig, "/")).replace(/public/ig, "static");
+                this.form[tag.split(".")[0]][tag.split(".")[1]] = response.path;
             },
             beforeUpload (file) {
 		        console.log(file)
@@ -207,8 +208,6 @@
             handleReset () {
                 // reset 表单
                 this.$refs.form.resetFields();
-                this.form.logo = this.mirroring_logo;
-                this.form.prdpic = this.mirroring_prdpic;
                 this.isedit = false;
             }
         },
