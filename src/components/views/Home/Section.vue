@@ -8,6 +8,9 @@
                         <span style="font-weight: bold;">位置{{index + 1}}</span>
                     </div>
                     <div>
+                        <el-form-item label="链接">
+                            <el-input v-model="item.link" auto-complete="off" placeholder="例：链接"></el-input>
+                        </el-form-item>
                         <el-form-item label="PC中文" :prop="'items.' + index + '.imgpc.ch'" :rules="{required: true, trigger: 'change'}">
                             <el-input v-model="item.imgpc.ch" auto-complete="off"></el-input>
                             <el-upload action="/api/upload/section" :on-success="handleSuccess.bind(undefined, index, 'imgpc.ch')" :on-error="handleuploaderror" accept="image/*" :before-upload="beforeUpload" list-type="picture" :show-file-list="false">
@@ -74,7 +77,8 @@
                             imgmobile: {
                                 ch: "",
                                 en: ""
-                            }
+                            },
+                            link: ""
                         },
                         {
                             imgpc: {
@@ -84,7 +88,8 @@
                             imgmobile: {
                                 ch: "",
                                 en: ""
-                            }
+                            },
+                            link: ""
                         },
                         {
                             imgpc: {
@@ -94,7 +99,8 @@
                             imgmobile: {
                                 ch: "",
                                 en: ""
-                            }
+                            },
+                            link: ""
                         }
                     ]
                 }
