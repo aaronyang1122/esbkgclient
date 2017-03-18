@@ -8,32 +8,38 @@
                         <span style="font-weight: bold;">位置{{index + 1}}</span>
                     </div>
                     <div>
-                        <el-form-item label="标题" :prop="'items.' + index + '.title.ch'" :rules="{required: true, trigger: 'blur'}">
-                            <el-input v-model="item.title.ch" auto-complete="off" placeholder="例：标题（中文）"></el-input>
-                        </el-form-item>
-                        <el-form-item label="Title" :prop="'items.' + index + '.title.en'" :rules="{required: true, trigger: 'blur'}">
-                            <el-input v-model="item.title.en" auto-complete="off" placeholder="例：Title（English）"></el-input>
-                        </el-form-item>
-                        <el-form-item label="描述" :prop="'items.' + index + '.description.ch'" :rules="{required: true, trigger: 'blur'}">
-                            <el-input v-model="item.description.ch" auto-complete="off" placeholder="例：描述（中文）"></el-input>
-                        </el-form-item>
-                        <el-form-item label="Description" :prop="'items.' + index + '.description.en'" :rules="{required: true, trigger: 'blur'}">
-                            <el-input v-model="item.description.en" auto-complete="off" placeholder="例：Description（English）"></el-input>
-                        </el-form-item>
-                        <el-form-item label="logo" :prop="'items.' + index + '.logo'" :rules="{required: true, trigger: 'change'}">
-                            <el-input v-model="item.logo" auto-complete="off"></el-input>
-                            <el-upload action="/api/upload/section" :on-success="handleSuccess.bind(undefined, index, 'logo')" :on-error="handleuploaderror" accept="image/*" :before-upload="beforeUpload" list-type="picture" :show-file-list="false">
-                                <div v-if="item.logo" class="picProview">
-                                    <img :src="item.logo">
+                        <el-form-item label="PC中文" :prop="'items.' + index + '.imgpc.ch'" :rules="{required: true, trigger: 'change'}">
+                            <el-input v-model="item.imgpc.ch" auto-complete="off"></el-input>
+                            <el-upload action="/api/upload/section" :on-success="handleSuccess.bind(undefined, index, 'imgpc.ch')" :on-error="handleuploaderror" accept="image/*" :before-upload="beforeUpload" list-type="picture" :show-file-list="false">
+                                <div v-if="item.imgpc.ch" class="picProview">
+                                    <img :src="item.imgpc.ch">
                                 </div>
                                 <el-button size="small" type="primary" :loading="uploading">点击上传</el-button>
                             </el-upload>
                         </el-form-item>
-                        <el-form-item label="背景图" :prop="'items.' + index + '.bg'" :rules="{required: true, trigger: 'change'}">
-                            <el-input v-model="item.bg" auto-complete="off"></el-input>
-                            <el-upload action="/api/upload/section" :on-success="handleSuccess.bind(undefined, index, 'bg')" :on-error="handleuploaderror" accept="image/*" :before-upload="beforeUpload" list-type="picture" :show-file-list="false">
-                                <div v-if="item.bg" class="picProview">
-                                    <img :src="item.bg">
+                        <el-form-item label="PC英文" :prop="'items.' + index + '.imgpc.en'" :rules="{required: true, trigger: 'change'}">
+                            <el-input v-model="item.imgpc.en" auto-complete="off"></el-input>
+                            <el-upload action="/api/upload/section" :on-success="handleSuccess.bind(undefined, index, 'imgpc.en')" :on-error="handleuploaderror" accept="image/*" :before-upload="beforeUpload" list-type="picture" :show-file-list="false">
+                                <div v-if="item.imgpc.en" class="picProview">
+                                    <img :src="item.imgpc.en">
+                                </div>
+                                <el-button size="small" type="primary" :loading="uploading">点击上传</el-button>
+                            </el-upload>
+                        </el-form-item>
+                        <el-form-item label="Mobile中文" :prop="'items.' + index + '.imgmobile.ch'" :rules="{required: true, trigger: 'change'}">
+                            <el-input v-model="item.imgmobile.ch" auto-complete="off"></el-input>
+                            <el-upload action="/api/upload/section" :on-success="handleSuccess.bind(undefined, index, 'imgmobile.ch')" :on-error="handleuploaderror" accept="image/*" :before-upload="beforeUpload" list-type="picture" :show-file-list="false">
+                                <div v-if="item.imgmobile.ch" class="picProview">
+                                    <img :src="item.imgmobile.ch">
+                                </div>
+                                <el-button size="small" type="primary" :loading="uploading">点击上传</el-button>
+                            </el-upload>
+                        </el-form-item>
+                        <el-form-item label="Mobile英文" :prop="'items.' + index + '.imgmobile.en'" :rules="{required: true, trigger: 'change'}">
+                            <el-input v-model="item.imgmobile.en" auto-complete="off"></el-input>
+                            <el-upload action="/api/upload/section" :on-success="handleSuccess.bind(undefined, index, 'imgmobile.en')" :on-error="handleuploaderror" accept="image/*" :before-upload="beforeUpload" list-type="picture" :show-file-list="false">
+                                <div v-if="item.imgmobile.en" class="picProview">
+                                    <img :src="item.imgmobile.en">
                                 </div>
                                 <el-button size="small" type="primary" :loading="uploading">点击上传</el-button>
                             </el-upload>
@@ -61,40 +67,34 @@
                 form: {
                     items: [
                         {
-                            title: {
+                            imgpc: {
                                 ch: "",
                                 en: ""
                             },
-                            description: {
+                            imgmobile: {
                                 ch: "",
                                 en: ""
-                            },
-                            bg: "",
-                            logo: ""
+                            }
                         },
                         {
-                            title: {
+                            imgpc: {
                                 ch: "",
                                 en: ""
                             },
-                            description: {
+                            imgmobile: {
                                 ch: "",
                                 en: ""
-                            },
-                            bg: "",
-                            logo: ""
+                            }
                         },
                         {
-                            title: {
+                            imgpc: {
                                 ch: "",
                                 en: ""
                             },
-                            description: {
+                            imgmobile: {
                                 ch: "",
                                 en: ""
-                            },
-                            bg: "",
-                            logo: ""
+                            }
                         }
                     ]
                 }
@@ -107,16 +107,16 @@
                     type: 'success'
                 });
                 response.path = ("/" + response.path.replace(/\\/ig, "/")).replace(/public/ig, "static");
-                this.form.items[index][tag] = response.path;
+                this.form.items[index][tag.split('.')[0]][tag.split('.')[1]] = response.path;
             },
             beforeUpload (file) {
                 const PIC = file.type === 'image/jpeg' || file.type === 'image/png';
-                const isLt2M = file.size / 1024 / 1024 < 0.5;
+                const isLt2M = file.size / 1024 / 1024 < 1;
                 if (!PIC) {
                     this.$message.error('上传图片只能是 JPG 或 PNG 格式!');
                 }
                 if (!isLt2M) {
-                    this.$message.error('上传图片大小不能超过 500Kb!');
+                    this.$message.error('上传图片大小不能超过 1000Kb!');
                 }
                 return PIC && isLt2M;
             },
