@@ -24,11 +24,11 @@ module.exports = {
     proxyTable: {
       // proxy all requests starting with /api to jsonplaceholder
         '/api': {
-            target: 'http://127.0.0.1:3033',
+            target: 'http://yyn1218.com',
             changeOrigin: false
         },
         '/static': {
-            target: 'http://127.0.0.1:3033',
+            target: 'http://yyn1218.com',
             changeOrigin: false
         }
     },

@@ -542,6 +542,24 @@ const _some = function (item) {
 	}
 }
 
+const imgSource = function () {
+	let _this = this;
+    let image = new Image();
+    return new Promise(function (resolve, reject) {
+    	try {
+            image.onload = function () {
+                resolve({
+                    imgHeight: image.height,
+                    imgWidth: image.width
+                })
+            }
+            image.src = _this.url
+		} catch (e) {
+            reject(e)
+		}
+    })
+}
+
 export {
 	lazyLoading,
 	pointerMenuObj,
@@ -565,5 +583,6 @@ export {
 	generateRoutesFromMenu,
 	requireAuth,
 	_some,
-	getURL
+	getURL,
+    imgSource
 }

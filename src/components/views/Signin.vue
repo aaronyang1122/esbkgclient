@@ -15,8 +15,10 @@
 						<match-box :clear-button="form.password.clear" :placeholder="form.password.placeholder" v-model="form.password.value" :required="true" :type="form.password.type"></match-box>
 					</div>
 				</div>
+
+				<button type="submit" class="btn btn-lg btn-primary btn-block" :loading="loading" @click="submit">登 录</button>
 			</form>
-			<button type="submit" class="btn btn-lg btn-primary btn-block" :loading="loading" @click="submit">登 录</button>
+
 		</div>
 		<div class="text-center">
 			<p>

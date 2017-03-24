@@ -61,6 +61,8 @@
     </section>
 </template>
 <script type="text/javascript">
+    import { imgSource } from '../../../common/common'
+
     export default {
         data () {
             return {
@@ -112,7 +114,17 @@
                     message: response.filename + "上传已经成功",
                     type: 'success'
                 });
+
                 response.path = ("/" + response.path.replace(/\\/ig, "/")).replace(/public/ig, "static");
+
+                imgSource.call(file).then(
+                    (obj) => {
+                        this.form.items[index][tag.split('.')[0]].height = obj.imgHeight;
+                    },
+                    () => {
+                        this.$message.error('图片尺寸获取失败！');
+                    }
+                )
                 this.form.items[index][tag.split('.')[0]][tag.split('.')[1]] = response.path;
             },
             beforeUpload (file) {
@@ -168,7 +180,11 @@
                 })
             }
         },
-        watch: {},
+        watch: {
+            'form' (val, oldVal) {
+                console.log(val)
+            }
+        },
         created () {
             this.$http.get(
                     '/static/data/section.json',
